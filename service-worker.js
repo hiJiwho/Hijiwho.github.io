@@ -1,6 +1,8 @@
+const CACHE_NAME = 'portfolio-cache-v2';
+
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open('hello-world-cache').then((cache) => {
+        caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll([
                 '/',
                 '/index.html',
@@ -8,6 +10,20 @@ self.addEventListener('install', (event) => {
                 '/icon-192x192.png',
                 '/icon-512x512.png',
             ]);
+        })
+    );
+});
+
+self.addEventListener('activate', (event) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
         })
     );
 });
